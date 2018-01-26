@@ -77,6 +77,8 @@ final class ProfilesViewController: UIViewController, Emptiable {
         tableView.estimatedRowHeight = 80
         tableView.backgroundColor = Theme.viewBackgroundColor
         tableView.separatorStyle = .none
+        tableView.dataSource = self
+        tableView.delegate = self
 
         return tableView
     }()
