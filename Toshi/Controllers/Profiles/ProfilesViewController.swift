@@ -43,7 +43,7 @@ protocol ProfilesListCompletionOutput: class {
 
 // MARK: - Profiles View Controller
 
-final class ProfilesViewController: UITableViewController, Emptiable {
+final class ProfilesViewController: UIViewController, Emptiable {
     
     let type: ProfilesViewControllerType
 
@@ -56,11 +56,30 @@ final class ProfilesViewController: UITableViewController, Emptiable {
         return tableView
     }
 
+    private lazy var searchResultView: BrowseSearchResultView = {
+        let view = BrowseSearchResultView()
+//        view.searchDelegate = self
+        view.isHidden = true
+
+        return view
+    }()
+
     // MARK: - Lazy Vars
     
     private lazy var cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapCancel(_:)))
     private lazy var doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone(_:)))
     private lazy var addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAdd(_:)))
+
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+
+        tableView.register(ProfileCell.self)
+        tableView.estimatedRowHeight = 80
+        tableView.backgroundColor = Theme.viewBackgroundColor
+        tableView.separatorStyle = .none
+
+        return tableView
+    }()
 
     private lazy var searchController: UISearchController = {
         let controller = UISearchController(searchResultsController: nil)
@@ -104,7 +123,7 @@ final class ProfilesViewController: UITableViewController, Emptiable {
         super.init(nibName: nil, bundle: nil)
 
         self.dataSource.changesOutput = self
-        
+
         title = type.title
         self.output = output
     }
@@ -117,25 +136,33 @@ final class ProfilesViewController: UITableViewController, Emptiable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.register(ProfileCell.self)
 
         setupTableHeader()
         setupNavigationBarButtons()
 
         definesPresentationContext = true
 
-        tableView.estimatedRowHeight = 80
-        tableView.backgroundColor = Theme.viewBackgroundColor
-        tableView.separatorStyle = .none
-
         let appearance = UIButton.appearance(whenContainedInInstancesOf: [UISearchBar.self])
         appearance.setTitleColor(Theme.greyTextColor, for: .normal)
-        
+
         updateHeaderWithSelections()
 
         displayContacts()
-        setupEmptyView()
+
+        view.addSubview(tableView)
+        tableView.edges(to: view)
+
+        if type == .favorites {
+            setupEmptyView()
+        }
+
+        view.addSubview(searchResultView)
+        searchResultView.backgroundColor = .red
+
+        searchResultView.top(to: tableView)
+        searchResultView.left(to: tableView)
+        searchResultView.bottom(to: tableView)
+        searchResultView.right(to: tableView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -167,49 +194,6 @@ final class ProfilesViewController: UITableViewController, Emptiable {
         searchController.searchBar.superview?.clipsToBounds = false
     }
 
-    public override func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        switch type {
-        case .favorites,
-             .newChat:
-            guard let profile = dataSource.profile(at: indexPath) else { return }
-            didSelectProfile(profile: profile)
-        case .newGroupChat, .updateGroupChat:
-            dataSource.updateSelection(at: indexPath)
-            updateHeaderWithSelections()
-            reloadData()
-            navigationItem.rightBarButtonItem?.isEnabled = dataSource.rightBarButtonEnabled()
-        }
-    }
-
-    public override func numberOfSections(in tableView: UITableView) -> Int {
-        return dataSource.numberOfSections()
-    }
-
-    public override func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.numberOfItems(in: section)
-    }
-
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(ProfileCell.self, for: indexPath)
-        
-        guard let profile = dataSource.profile(at: indexPath) else {
-            assertionFailure("Could not get profile at indexPath: \(indexPath)")
-            return cell
-        }
-
-        cell.avatarPath = profile.avatarPath
-        cell.name = profile.name
-        cell.displayUsername = profile.displayUsername
-
-        if isMultipleSelectionMode {
-            cell.selectionStyle = .none
-            cell.isCheckmarkShowing = true
-            cell.isCheckmarkChecked = dataSource.isProfileSelected(profile)
-        }
-
-        return cell
-    }
-
     private var isMultipleSelectionSetup: Bool {
         return type == .newGroupChat || type == .updateGroupChat
     }
@@ -217,7 +201,7 @@ final class ProfilesViewController: UITableViewController, Emptiable {
     private func updateHeaderWithSelections() {
         guard isMultipleSelectionSetup else { return }
         guard
-            let header = tableView?.tableHeaderView as? ProfilesHeaderView,
+            let header = tableView.tableHeaderView as? ProfilesHeaderView,
             let selectedProfilesView = header.addedHeader else {
                 assertionFailure("Couldn't access header!")
                 return
@@ -343,17 +327,67 @@ final class ProfilesViewController: UITableViewController, Emptiable {
     func reloadData() {
         if #available(iOS 11.0, *) {
             // Must perform batch updates on iOS 11 or you'll get super-wonky layout because of the headers.
-            tableView?.performBatchUpdates({
-                self.tableView?.reloadData()
+            tableView.performBatchUpdates({
+                self.tableView.reloadData()
             }, completion: nil)
         } else {
-            tableView?.reloadData()
+            tableView.reloadData()
         }
     }
 }
 
-// MARK: - Search Bar Delegate
+// MARK: - Table View Delegate
+extension ProfilesViewController: UITableViewDelegate {
+    public func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch type {
+        case .favorites,
+             .newChat:
+            guard let profile = dataSource.profile(at: indexPath) else {
+                return
+            }
+            didSelectProfile(profile: profile)
+        case .newGroupChat, .updateGroupChat:
+            dataSource.updateSelection(at: indexPath)
+            updateHeaderWithSelections()
+            reloadData()
+            navigationItem.rightBarButtonItem?.isEnabled = dataSource.rightBarButtonEnabled()
+        }
+    }
+}
+// MARK: - Table View Data Source
 
+extension ProfilesViewController: UITableViewDataSource {
+    public func numberOfSections(in tableView: UITableView) -> Int {
+        return dataSource.numberOfSections()
+    }
+
+    public func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataSource.numberOfItems(in: section)
+    }
+
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeue(ProfileCell.self, for: indexPath)
+
+        guard let profile = dataSource.profile(at: indexPath) else {
+            assertionFailure("Could not get profile at indexPath: \(indexPath)")
+            return cell
+        }
+
+        cell.avatarPath = profile.avatarPath
+        cell.name = profile.name
+        cell.displayUsername = profile.displayUsername
+
+        if isMultipleSelectionMode {
+            cell.selectionStyle = .none
+            cell.isCheckmarkShowing = true
+            cell.isCheckmarkChecked = dataSource.isProfileSelected(profile)
+        }
+
+        return cell
+    }
+}
+
+// MARK: - Search Bar Delegate
 extension ProfilesViewController: UISearchBarDelegate {
     
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -391,28 +425,28 @@ extension ProfilesViewController: ProfilesDatasourceChangesOutput {
     func datasourceDidChange(_ datasource: ProfilesDataSource, yapDatabaseChanges: [YapDatabaseViewRowChange]) {
 
         if navigationController?.topViewController == self && tabBarController?.selectedViewController == navigationController {
-            tableView?.beginUpdates()
+            tableView.beginUpdates()
 
             for rowChange in yapDatabaseChanges {
 
                 switch rowChange.type {
                 case .delete:
                     guard let indexPath = rowChange.indexPath else { continue }
-                    tableView?.deleteRows(at: [indexPath], with: .none)
+                    tableView.deleteRows(at: [indexPath], with: .none)
                 case .insert:
                     guard let newIndexPath = rowChange.newIndexPath else { continue }
-                    tableView?.insertRows(at: [newIndexPath], with: .none)
+                    tableView.insertRows(at: [newIndexPath], with: .none)
                 case .move:
                     guard let newIndexPath = rowChange.newIndexPath, let indexPath = rowChange.indexPath else { continue }
-                    tableView?.deleteRows(at: [indexPath], with: .none)
-                    tableView?.insertRows(at: [newIndexPath], with: .none)
+                    tableView.deleteRows(at: [indexPath], with: .none)
+                    tableView.insertRows(at: [newIndexPath], with: .none)
                 case .update:
                     guard let indexPath = rowChange.indexPath else { continue }
-                    tableView?.reloadRows(at: [indexPath], with: .none)
+                    tableView.reloadRows(at: [indexPath], with: .none)
                 }
             }
 
-            tableView?.endUpdates()
+            tableView.endUpdates()
         } else {
             tableView.reloadData()
         }
