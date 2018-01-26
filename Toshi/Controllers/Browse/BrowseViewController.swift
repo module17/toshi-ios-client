@@ -306,47 +306,6 @@ extension BrowseViewController: UISearchBarDelegate {
         clearSearch()
         hideOpenURLButtonIfNeeded()
     }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if let sectionedCollectionView = collectionView as? SectionedCollectionView {
-            let cell = sectionedCollectionView.dequeue(BrowseEntityCollectionViewCell.self, for: indexPath)
-            
-            if let section = items.element(at: sectionedCollectionView.section), let item = section.element(at: indexPath.item) {
-                cell.nameLabel.text = item.nameForBrowseAndSearch
-                cell.imageViewPath = item.avatarPath
-
-                cell.ratingView.isHidden = !item.shouldShowRating
-                if let averageRating = item.rating {
-                    cell.ratingView.set(rating: averageRating)
-                }
-            }
-            
-            return cell
-        }
-        
-        let contentSection = contentSections[indexPath.item]
-        
-        let cell = collectionView.dequeue(BrowseCollectionViewCell.self, for: indexPath)
-        cell.collectionView.dataSource = self
-        cell.collectionView.reloadData()
-        cell.collectionView.collectionViewLayout.invalidateLayout()
-        cell.collectionView.section = indexPath.item
-        cell.contentSection = contentSection
-        cell.collectionViewDelegate = self
-        cell.divider.isHidden = contentSection == .latestPublicUsers
-        
-        return cell
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection _: Int) -> Int {
-        
-        if let collectionView = collectionView as? SectionedCollectionView {
-            return items[collectionView.section].count
-        }
-        
-        return items.count
-    }
 }
 
 extension BrowseViewController {
@@ -356,6 +315,47 @@ extension BrowseViewController {
         let itemHeight: CGFloat = (numberOfItems == 0) ? 0 : 247
         
         return CGSize(width: UIScreen.main.bounds.width, height: itemHeight)
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        if let sectionedCollectionView = collectionView as? SectionedCollectionView {
+            let cell = sectionedCollectionView.dequeue(BrowseEntityCollectionViewCell.self, for: indexPath)
+
+            if let section = items.element(at: sectionedCollectionView.section), let item = section.element(at: indexPath.item) {
+                cell.nameLabel.text = item.nameForBrowseAndSearch
+                cell.imageViewPath = item.avatarPath
+
+                cell.ratingView.isHidden = !item.shouldShowRating
+                if let averageRating = item.rating {
+                    cell.ratingView.set(rating: averageRating)
+                }
+            }
+
+            return cell
+        }
+
+        let contentSection = contentSections[indexPath.item]
+
+        let cell = collectionView.dequeue(BrowseCollectionViewCell.self, for: indexPath)
+        cell.collectionView.dataSource = self
+        cell.collectionView.reloadData()
+        cell.collectionView.collectionViewLayout.invalidateLayout()
+        cell.collectionView.section = indexPath.item
+        cell.contentSection = contentSection
+        cell.collectionViewDelegate = self
+        cell.divider.isHidden = contentSection == .latestPublicUsers
+
+        return cell
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection _: Int) -> Int {
+
+        if let collectionView = collectionView as? SectionedCollectionView {
+            return items[collectionView.section].count
+        }
+
+        return items.count
     }
 }
 

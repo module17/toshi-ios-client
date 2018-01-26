@@ -58,7 +58,7 @@ final class ProfilesViewController: UIViewController, Emptiable {
 
     private lazy var searchResultView: BrowseSearchResultView = {
         let view = BrowseSearchResultView()
-//        view.searchDelegate = self
+        view.searchDelegate = self
         view.isHidden = false
         view.backgroundColor = .red
 
@@ -179,6 +179,11 @@ final class ProfilesViewController: UIViewController, Emptiable {
         if dataSource.type != .updateGroupChat {
             dataSource.excludedProfilesIds = []
         }
+
+        if let indexPathForSelectedRow = searchResultView.indexPathForSelectedRow {
+            searchResultView.deselectRow(at: indexPathForSelectedRow, animated: true)
+        }
+
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -394,10 +399,21 @@ extension ProfilesViewController: UISearchBarDelegate {
     
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = nil
-        
-        if type != .newChat {
-            displayContacts()
+
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchResultView.isHidden = true
+        searchResultView.searchResults = []
+    }
+
+    func searchBar(_: UISearchBar, textDidChange searchText: String) {
+
+        searchResultView.isHidden = false
+
+        if searchText.isEmpty {
+            searchResultView.searchResults = []
         }
+
+        reload(searchText: searchText)
     }
 }
 
@@ -407,7 +423,7 @@ extension ProfilesViewController: UISearchResultsUpdating {
     
     public func updateSearchResults(for searchController: UISearchController) {
 
-        dataSource.searchText = searchController.searchBar.text ?? ""
+//        dataSource.searchText = searchController.searchBar.text ?? ""
     }
 }
 
@@ -454,5 +470,21 @@ extension ProfilesViewController: ProfilesDatasourceChangesOutput {
         }
 
         showOrHideEmptyState()
+    }
+
+    @objc private func reload(searchText: String) {
+
+        IDAPIClient.shared.searchContacts(name: searchText) { [weak self] users in
+            //     if let searchBarText = self?.searchBar.text, searchText == searchBarText {
+            self?.searchResultView.searchResults = users
+            //   }
+        }
+    }
+}
+
+extension ProfilesViewController: SearchSelectionDelegate {
+
+    func didSelectSearchResult(user: TokenUser) {
+        navigationController?.pushViewController(ProfileViewController(profile: user), animated: true)
     }
 }
