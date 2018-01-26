@@ -59,8 +59,7 @@ final class ProfilesViewController: UIViewController, Emptiable {
     private lazy var searchResultView: BrowseSearchResultView = {
         let view = BrowseSearchResultView()
         view.searchDelegate = self
-        view.isHidden = false
-        view.backgroundColor = .red
+        view.isHidden = true
 
         return view
     }()
@@ -161,7 +160,7 @@ final class ProfilesViewController: UIViewController, Emptiable {
 
         view.addSubview(searchResultView)
 
-        searchResultView.top(to: layoutGuide(), offset: tableView.tableHeaderView?.frame.height ?? 0)
+        searchResultView.top(to: tableView)
         searchResultView.left(to: tableView)
         searchResultView.bottom(to: tableView)
         searchResultView.right(to: tableView)
@@ -485,6 +484,6 @@ extension ProfilesViewController: ProfilesDatasourceChangesOutput {
 extension ProfilesViewController: SearchSelectionDelegate {
 
     func didSelectSearchResult(user: TokenUser) {
-        navigationController?.pushViewController(ProfileViewController(profile: user), animated: true)
+        didSelectProfile(profile: user)
     }
 }
