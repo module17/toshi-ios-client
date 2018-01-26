@@ -59,7 +59,8 @@ final class ProfilesViewController: UIViewController, Emptiable {
     private lazy var searchResultView: BrowseSearchResultView = {
         let view = BrowseSearchResultView()
 //        view.searchDelegate = self
-        view.isHidden = true
+        view.isHidden = false
+        view.backgroundColor = .red
 
         return view
     }()
@@ -159,9 +160,8 @@ final class ProfilesViewController: UIViewController, Emptiable {
         }
 
         view.addSubview(searchResultView)
-        searchResultView.backgroundColor = .red
 
-        searchResultView.top(to: tableView)
+        searchResultView.top(to: layoutGuide(), offset: tableView.tableHeaderView?.frame.height ?? 0)
         searchResultView.left(to: tableView)
         searchResultView.bottom(to: tableView)
         searchResultView.right(to: tableView)
