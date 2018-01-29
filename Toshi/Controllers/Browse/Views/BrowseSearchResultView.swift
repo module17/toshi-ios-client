@@ -53,6 +53,10 @@ class BrowseSearchResultView: UITableView {
     override var canBecomeFirstResponder: Bool {
         return true
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+    }
 }
 
 extension BrowseSearchResultView: UITableViewDelegate {

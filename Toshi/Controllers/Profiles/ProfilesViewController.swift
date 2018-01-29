@@ -52,7 +52,11 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     let emptyView = EmptyView(title: Localized("favorites_empty_title"), description: Localized("favorites_empty_description"), buttonTitle: Localized("invite_friends_action_title"))
     
     var scrollView: UIScrollView {
-        return tableView
+        if type == .favorites {
+            return tableView
+        } else {
+            return searchResultView
+        }
     }
 
     var scrollViewBottomInset: CGFloat = 0.0
@@ -77,7 +81,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         let view = BrowseSearchResultView()
         view.searchDelegate = self
         view.isHidden = true
-        view.backgroundColor = .red
 
         return view
     }()
@@ -157,6 +160,8 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        registerForKeyboardNotifications()
+
         setupTableHeader()
         setupNavigationBarButtons()
 
@@ -207,12 +212,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
             searchResultView.deselectRow(at: indexPathForSelectedRow, animated: true)
         }
 
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        scrollViewBottomInset = tableView.contentInset.bottom
     }
     
     override func viewDidLayoutSubviews() {
