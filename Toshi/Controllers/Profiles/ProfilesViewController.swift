@@ -59,13 +59,14 @@ final class ProfilesViewController: UIViewController, Emptiable {
     private lazy var searchResultView: BrowseSearchResultView = {
         let view = BrowseSearchResultView()
         view.searchDelegate = self
-        view.isHidden = true
+        view.isHidden = false
+        view.backgroundColor = .red
 
         return view
     }()
 
     // MARK: - Lazy Vars
-    
+
     private lazy var cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(didTapCancel(_:)))
     private lazy var doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didTapDone(_:)))
     private lazy var addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(didTapAdd(_:)))
@@ -92,30 +93,30 @@ final class ProfilesViewController: UIViewController, Emptiable {
         controller.searchBar.barTintColor = Theme.viewBackgroundColor
         controller.searchBar.tintColor = Theme.tintColor
         controller.searchBar.placeholder = "Search by username"
-        
+
         guard #available(iOS 11.0, *) else {
             controller.searchBar.searchBarStyle = .minimal
             controller.searchBar.backgroundColor = Theme.viewBackgroundColor
             controller.searchBar.layer.borderWidth = .lineHeight
             controller.searchBar.layer.borderColor = Theme.borderColor.cgColor
-            
+
             return controller
         }
-        
+
         let searchField = controller.searchBar.value(forKey: "searchField") as? UITextField
         searchField?.backgroundColor = Theme.inputFieldBackgroundColor
-        
+
         return controller
     }()
 
     private var isMultipleSelectionMode: Bool {
         return type == .newGroupChat || type == .updateGroupChat
     }
-    
+
     private(set) var dataSource: ProfilesDataSource
-    
+
     // MARK: - Initialization
-    
+
     required public init(datasource: ProfilesDataSource, output: ProfilesListCompletionOutput? = nil) {
 
         self.dataSource = datasource
@@ -129,13 +130,13 @@ final class ProfilesViewController: UIViewController, Emptiable {
         title = type.title
         self.output = output
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -160,7 +161,12 @@ final class ProfilesViewController: UIViewController, Emptiable {
 
         view.addSubview(searchResultView)
 
-        searchResultView.top(to: tableView)
+        if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
+            searchResultView.top(to: addedHeader)
+        } else {
+            searchResultView.top(to: tableView)
+        }
+
         searchResultView.left(to: tableView)
         searchResultView.bottom(to: tableView)
         searchResultView.right(to: tableView)
