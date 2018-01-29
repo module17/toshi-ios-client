@@ -43,17 +43,34 @@ protocol ProfilesListCompletionOutput: class {
 
 // MARK: - Profiles View Controller
 
-final class ProfilesViewController: UIViewController, Emptiable {
+final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjustable {
     
     let type: ProfilesViewControllerType
 
-    var scrollViewBottomInset: CGFloat = 0
     private(set) weak var output: ProfilesListCompletionOutput?
 
     let emptyView = EmptyView(title: Localized("favorites_empty_title"), description: Localized("favorites_empty_description"), buttonTitle: Localized("invite_friends_action_title"))
     
     var scrollView: UIScrollView {
         return tableView
+    }
+
+    var scrollViewBottomInset: CGFloat = 0.0
+
+    var keyboardWillShowSelector: Selector {
+        return #selector(keyboardShownNotificationReceived(_:))
+    }
+
+    var keyboardWillHideSelector: Selector {
+        return #selector(keyboardHiddenNotificationReceived(_:))
+    }
+
+    @objc private func keyboardShownNotificationReceived(_ notification: NSNotification) {
+        keyboardWillShow(notification)
+    }
+
+    @objc private func keyboardHiddenNotificationReceived(_ notification: NSNotification) {
+        keyboardWillHide(notification)
     }
 
     private lazy var searchResultView: BrowseSearchResultView = {
@@ -165,12 +182,12 @@ final class ProfilesViewController: UIViewController, Emptiable {
         if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
             searchResultView.topToBottom(of: addedHeader)
         } else {
-            searchResultView.top(to: view)
+            searchResultView.top(to: tableView)
         }
 
-        searchResultView.left(to: view)
-        searchResultView.bottom(to: view)
-        searchResultView.right(to: view)
+        searchResultView.left(to: tableView)
+        searchResultView.bottom(to: tableView)
+        searchResultView.right(to: tableView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -494,3 +511,4 @@ extension ProfilesViewController: SearchSelectionDelegate {
         didSelectProfile(profile: user)
     }
 }
+
