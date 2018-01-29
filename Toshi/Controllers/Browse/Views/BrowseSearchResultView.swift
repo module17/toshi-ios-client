@@ -46,7 +46,6 @@ class BrowseSearchResultView: UITableView {
         separatorStyle = .none
         alwaysBounceVertical = true
         showsVerticalScrollIndicator = true
-        contentInset.bottom = 60
 
         register(SearchResultCell.self)
     }
