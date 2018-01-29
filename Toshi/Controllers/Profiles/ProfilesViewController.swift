@@ -59,7 +59,7 @@ final class ProfilesViewController: UIViewController, Emptiable {
     private lazy var searchResultView: BrowseSearchResultView = {
         let view = BrowseSearchResultView()
         view.searchDelegate = self
-        view.isHidden = false
+        view.isHidden = true
         view.backgroundColor = .red
 
         return view
@@ -160,16 +160,17 @@ final class ProfilesViewController: UIViewController, Emptiable {
         }
 
         view.addSubview(searchResultView)
+        searchResultView.edges(to: view)
 
         if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
-            searchResultView.top(to: addedHeader)
+            searchResultView.topToBottom(of: addedHeader)
         } else {
-            searchResultView.top(to: tableView)
+            searchResultView.top(to: view)
         }
 
-        searchResultView.left(to: tableView)
-        searchResultView.bottom(to: tableView)
-        searchResultView.right(to: tableView)
+        searchResultView.left(to: view)
+        searchResultView.bottom(to: view)
+        searchResultView.right(to: view)
     }
     
     override func viewWillAppear(_ animated: Bool) {
