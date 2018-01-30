@@ -499,9 +499,9 @@ extension ProfilesViewController: ProfilesDatasourceChangesOutput {
     @objc private func reload(searchText: String) {
 
         IDAPIClient.shared.searchContacts(name: searchText) { [weak self] users in
-            //     if let searchBarText = self?.searchBar.text, searchText == searchBarText {
-            self?.searchResultView.searchResults = users
-            //   }
+            if let searchBarText = self?.searchBar.text, searchText == searchBarText {
+                self?.searchResultView.searchResults = users
+            }
         }
     }
 }
