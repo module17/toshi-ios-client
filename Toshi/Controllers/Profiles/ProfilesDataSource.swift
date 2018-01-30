@@ -242,9 +242,7 @@ class ProfilesDataSource: NSObject {
         return selectedProfiles.contains(profile)
     }
 
-    func updateSelection(at indexPath: IndexPath) {
-        guard let profile = profile(at: indexPath) else { return }
-
+    func updateSelection(with profile: TokenUser) {
         if selectedProfiles.contains(profile) {
             selectedProfiles.remove(profile)
         } else {

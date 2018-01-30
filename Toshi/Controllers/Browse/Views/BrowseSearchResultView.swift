@@ -23,6 +23,7 @@ protocol SearchSelectionDelegate: class {
 }
 
 class BrowseSearchResultView: UITableView {
+    var isMultipleSelectionMode = false
 
     var searchResults: [TokenUser] = [] {
         didSet {
@@ -62,9 +63,9 @@ class BrowseSearchResultView: UITableView {
 extension BrowseSearchResultView: UITableViewDelegate {
 
     func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if let item = searchResults.element(at: indexPath.row) {
-            searchDelegate?.didSelectSearchResult(user: item)
-        }
+        guard let item = searchResults.element(at: indexPath.row) else { return }
+
+        searchDelegate?.didSelectSearchResult(user: item)
     }
 }
 
@@ -89,6 +90,12 @@ extension BrowseSearchResultView: UITableViewDataSource {
         cell.avatarPath = profile.avatarPath
         cell.name = profile.name
         cell.displayUsername = profile.isApp ? profile.category : profile.username
+
+        if isMultipleSelectionMode {
+            cell.selectionStyle = .none
+            cell.isCheckmarkShowing = true
+//            cell.isCheckmarkChecked = dataSource.isProfileSelected(profile)
+        }
 
         return cell
     }

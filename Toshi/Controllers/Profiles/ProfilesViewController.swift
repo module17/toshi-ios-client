@@ -51,7 +51,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     private(set) weak var output: ProfilesListCompletionOutput?
 
     let emptyView = EmptyView(title: Localized("favorites_empty_title"), description: Localized("favorites_empty_description"), buttonTitle: Localized("invite_friends_action_title"))
-    
+
     var scrollView: UIScrollView {
         if type == .favorites {
             return tableView
@@ -82,6 +82,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         let view = BrowseSearchResultView()
         view.searchDelegate = self
         view.isHidden = true
+        view.isMultipleSelectionMode = isMultipleSelectionMode
 
         return view
     }()
@@ -188,11 +189,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
                 searchResultView.topToBottom(of: addedHeader)
             } else {
                 searchResultView.top(to: tableView)
-            }
-
-            searchResultView.left(to: tableView)
-            searchResultView.bottom(to: tableView)
-            searchResultView.right(to: tableView)
         }
     }
     
@@ -240,17 +236,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         selectedProfilesView.updateDisplay(with: dataSource.selectedProfiles)
     }
 
-    private func didSelectProfile(profile: TokenUser) {
-        searchController.searchBar.resignFirstResponder()
-
-        if type == .newChat {
-            output?.didFinish(self, selectedProfilesIds: [profile.address])
-        } else {
-            navigationController?.pushViewController(ProfileViewController(profile: profile), animated: true)
-            UserDefaultsWrapper.selectedContact = profile.address
-        }
-    }
-    
     // MARK: - View Setup
 
     private func setupTableHeader() {
@@ -369,15 +354,22 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
 // MARK: - Table View Delegate
 extension ProfilesViewController: UITableViewDelegate {
     public func tableView(_: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let profile = dataSource.profile(at: indexPath) else { return}
+
+        didSelectProfile(profile: profile)
+    }
+
+    func didSelectProfile(profile: TokenUser) {
+        searchController.searchBar.resignFirstResponder()
+
         switch type {
-        case .favorites,
-             .newChat:
-            guard let profile = dataSource.profile(at: indexPath) else {
-                return
-            }
-            didSelectProfile(profile: profile)
+        case .favorites:
+            navigationController?.pushViewController(ProfileViewController(profile: profile), animated: true)
+            UserDefaultsWrapper.selectedContact = profile.address
+        case .newChat:
+            output?.didFinish(self, selectedProfilesIds: [profile.address])
         case .newGroupChat, .updateGroupChat:
-            dataSource.updateSelection(at: indexPath)
+            dataSource.updateSelection(with: profile)
             updateHeaderWithSelections()
             reloadData()
             navigationItem.rightBarButtonItem?.isEnabled = dataSource.rightBarButtonEnabled()
