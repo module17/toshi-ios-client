@@ -47,7 +47,7 @@ class BrowseSearchResultView: UITableView {
         alwaysBounceVertical = true
         showsVerticalScrollIndicator = true
 
-        register(SearchResultCell.self)
+        register(ProfileCell.self)
     }
 
     override var canBecomeFirstResponder: Bool {
@@ -79,18 +79,16 @@ extension BrowseSearchResultView: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(SearchResultCell.self, for: indexPath)
+        let cell = tableView.dequeue(ProfileCell.self, for: indexPath)
 
-        if let item = searchResults.element(at: indexPath.row) {
-            cell.usernameLabel.text = item.isApp ? item.category : item.username
-            cell.nameLabel.text = item.name
-            
-            AvatarManager.shared.avatar(for: item.avatarPath, completion: { image, path in
-                if item.avatarPath == path {
-                    cell.avatarImageView.image = image
-                }
-            })
+        guard let profile = searchResults.element(at: indexPath.row) else {
+            assertionFailure("Could not get profile at indexPath: \(indexPath)")
+            return cell
         }
+
+        cell.avatarPath = profile.avatarPath
+        cell.name = profile.name
+        cell.displayUsername = profile.isApp ? profile.category : profile.username
 
         return cell
     }

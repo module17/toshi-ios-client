@@ -50,7 +50,7 @@ class BrowseAllViewController: UITableViewController {
         tableView.alwaysBounceVertical = true
         tableView.showsVerticalScrollIndicator = true
         tableView.contentInset.bottom = 60
-        tableView.register(SearchResultCell.self)
+        tableView.register(ProfileCell.self)
         tableView.estimatedRowHeight = 50
     }
 
@@ -100,19 +100,18 @@ class BrowseAllViewController: UITableViewController {
         return searchResults.count
     }
 
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeue(SearchResultCell.self, for: indexPath)
+        let cell = tableView.dequeue(ProfileCell.self, for: indexPath)
 
-        if let item = searchResults.element(at: indexPath.row) {
-            cell.nameLabel.text = item.nameForBrowseAndSearch
-            cell.usernameLabel.text = item.descriptionForSearch
-
-            AvatarManager.shared.avatar(for: item.avatarPath, completion: { image, path in
-                if item.avatarPath == path {
-                    cell.avatarImageView.image = image
-                }
-            })
+        guard let profile = searchResults.element(at: indexPath.row) else {
+            assertionFailure("Could not get profile at indexPath: \(indexPath)")
+            return cell
         }
+
+        cell.avatarPath = profile.avatarPath
+        cell.name = profile.nameForBrowseAndSearch
+        cell.displayUsername = profile.descriptionForSearch
 
         return cell
     }

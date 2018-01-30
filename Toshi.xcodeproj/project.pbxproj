@@ -734,7 +734,6 @@
 		A9CADC1A1F94AF2D0096D017 /* BrowseAllViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC101F94AF2C0096D017 /* BrowseAllViewController.swift */; };
 		A9CADC1B1F94AF2D0096D017 /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC111F94AF2D0096D017 /* BrowseViewController.swift */; };
 		A9CADC1C1F94AF2D0096D017 /* BrowseEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC131F94AF2D0096D017 /* BrowseEntityCollectionViewCell.swift */; };
-		A9CADC1D1F94AF2D0096D017 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC141F94AF2D0096D017 /* SearchResultCell.swift */; };
 		A9CADC1E1F94AF2D0096D017 /* OpenURLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC151F94AF2D0096D017 /* OpenURLButton.swift */; };
 		A9CADC1F1F94AF2D0096D017 /* BrowseSearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC161F94AF2D0096D017 /* BrowseSearchResultView.swift */; };
 		A9CADC201F94AF2D0096D017 /* ReputationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC171F94AF2D0096D017 /* ReputationView.swift */; };
@@ -748,8 +747,6 @@
 		A9CADC281F94B1CC0096D017 /* BrowseAllViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC101F94AF2C0096D017 /* BrowseAllViewController.swift */; };
 		A9CADC291F94B1D00096D017 /* BrowseEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC131F94AF2D0096D017 /* BrowseEntityCollectionViewCell.swift */; };
 		A9CADC2A1F94B1D00096D017 /* BrowseEntityCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC131F94AF2D0096D017 /* BrowseEntityCollectionViewCell.swift */; };
-		A9CADC2B1F94B1D30096D017 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC141F94AF2D0096D017 /* SearchResultCell.swift */; };
-		A9CADC2C1F94B1D30096D017 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC141F94AF2D0096D017 /* SearchResultCell.swift */; };
 		A9CADC2D1F94B1D60096D017 /* OpenURLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC151F94AF2D0096D017 /* OpenURLButton.swift */; };
 		A9CADC2E1F94B1D60096D017 /* OpenURLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC151F94AF2D0096D017 /* OpenURLButton.swift */; };
 		A9CADC2F1F94B1D90096D017 /* BrowseSearchResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9CADC161F94AF2D0096D017 /* BrowseSearchResultView.swift */; };
@@ -1288,7 +1285,6 @@
 		A9CADC101F94AF2C0096D017 /* BrowseAllViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseAllViewController.swift; sourceTree = "<group>"; };
 		A9CADC111F94AF2D0096D017 /* BrowseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		A9CADC131F94AF2D0096D017 /* BrowseEntityCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseEntityCollectionViewCell.swift; sourceTree = "<group>"; };
-		A9CADC141F94AF2D0096D017 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		A9CADC151F94AF2D0096D017 /* OpenURLButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenURLButton.swift; sourceTree = "<group>"; };
 		A9CADC161F94AF2D0096D017 /* BrowseSearchResultView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrowseSearchResultView.swift; sourceTree = "<group>"; };
 		A9CADC171F94AF2D0096D017 /* ReputationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReputationView.swift; sourceTree = "<group>"; };
@@ -2101,7 +2097,7 @@
 				2BC6925C1EE937E800285070 /* Emptiable.swift */,
 				2BE66A0B1EF910B6007A7130 /* KeyboardAdjustable.swift */,
 				D197B827D378D5A6CE7A52D0 /* OfflineAlertDisplaying.swift */,
-				2BC4084D1EF186000044C242 /* PaymentPresentable.swift */,
+				2BC4084D1EF186000044C242,
 				2BE3C4FA1FD7EE2E001F6919,
 				33CF51381FD1952500293FD1 /* StringCaseListable.swift */,
 			);
@@ -2280,7 +2276,6 @@
 				A9CADC151F94AF2D0096D017 /* OpenURLButton.swift */,
 				A9CADC351F94C5B00096D017 /* ReputationBarView.swift */,
 				A9CADC171F94AF2D0096D017 /* ReputationView.swift */,
-				A9CADC141F94AF2D0096D017 /* SearchResultCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3306,7 +3301,6 @@
 				A9E691CD1F7A49AB00317DB1 /* SignInFooterView.swift in Sources */,
 				2B1D66981FC2E00E00EB166C /* BasicTableViewCell.swift in Sources */,
 				A9CADC241F94B1C50096D017 /* BrowseViewController.swift in Sources */,
-				A9CADC2C1F94B1D30096D017 /* SearchResultCell.swift in Sources */,
 				9F54A7241E951F1500FEB67B /* RatingsClient.swift in Sources */,
 				2BF285632018EE7600DA528D /* UIApplication+Testing.swift in Sources */,
 				2BE6FB101EFC0CC500B0B848 /* AvatarManager.swift in Sources */,
@@ -3510,7 +3504,6 @@
 				2B0EF8291F948931001A76CA /* CrashlyticsClient.swift in Sources */,
 				9FD25D3C1E813C3F0011F164 /* Navigator.swift in Sources */,
 				2B4E25FA1FCCCE00004614D5 /* AvatarTitleCell.swift in Sources */,
-				A9CADC1D1F94AF2D0096D017 /* SearchResultCell.swift in Sources */,
 				2B002D8F1F17BA1800D92240 /* NetworkSwitcher.swift in Sources */,
 				3312F68020077C0100881B97 /* DisappearingBackgroundNavBar.swift in Sources */,
 				33FD936B1FE953480082B9D8 /* Dapp.swift in Sources */,
@@ -3597,7 +3590,7 @@
 				2B6C19011FCDA4C600DE432B /* GroupInfoViewModel.swift in Sources */,
 				A9E691BF1F7A496800317DB1 /* SignInCell.swift in Sources */,
 				A9BF33B71E76F918009A51AA /* CheckboxControl.swift in Sources */,
-				2BC4084E1EF186000044C242 /* PaymentPresentable.swift in Sources */,
+				2BC4084E1EF186000044C242,
 				33EF275E2010D4690056699D /* DisappearingNavBarViewController.swift in Sources */,
 				A9E1DCD21F1E1989001A4ABE /* MessagesBasicCell.swift in Sources */,
 				9FE18B281E2D135F00940DC8 /* ProfileCell.swift in Sources */,
@@ -3784,7 +3777,6 @@
 				A9CADC231F94B1C50096D017 /* BrowseViewController.swift in Sources */,
 				33EED15C1FE92E2600C51EAC /* TSGroupModel+Additions.swift in Sources */,
 				A938AE081FBEFAB2002A2CD3 /* LeftAlignedButton.swift in Sources */,
-				A9CADC2B1F94B1D30096D017 /* SearchResultCell.swift in Sources */,
 				2B1D66971FC2E00E00EB166C /* BasicTableViewCell.swift in Sources */,
 				A9603E1D1F4DABDC00BF57B1 /* RatingsClient.swift in Sources */,
 				A9603E1F1F4DABDC00BF57B1 /* AvatarManager.swift in Sources */,
