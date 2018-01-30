@@ -51,6 +51,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     private(set) weak var output: ProfilesListCompletionOutput?
 
     let emptyView = EmptyView(title: Localized("favorites_empty_title"), description: Localized("favorites_empty_description"), buttonTitle: Localized("invite_friends_action_title"))
+    var shouldShowEmptyView = { type == .favorites }
 
     var scrollView: UIScrollView {
         if type == .favorites {
@@ -248,6 +249,8 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     }
     
     private func setupEmptyView() {
+        guard shouldShowEmptyView else { return }
+
         view.addSubview(emptyView)
         emptyView.actionButton.addTarget(self, action: #selector(emptyViewButtonPressed(_:)), for: .touchUpInside)
         emptyView.edges(to: layoutGuide())
@@ -278,6 +281,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     }
     
     private func showOrHideEmptyState() {
+        guard shouldShowEmptyView else { return }
         let emptyViewHidden = (searchController.isActive || !dataSource.isEmpty)
         emptyView.isHidden = emptyViewHidden
         tableView.tableHeaderView?.isHidden = !emptyViewHidden
