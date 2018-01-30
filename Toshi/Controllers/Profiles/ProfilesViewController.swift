@@ -46,6 +46,7 @@ protocol ProfilesListCompletionOutput: class {
 final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjustable {
     
     let type: ProfilesViewControllerType
+    private var searchBarText: String = ""
 
     private(set) weak var output: ProfilesListCompletionOutput?
 
@@ -497,9 +498,9 @@ extension ProfilesViewController: ProfilesDatasourceChangesOutput {
     }
 
     @objc private func reload(searchText: String) {
-
+        searchBarText = searchText
         IDAPIClient.shared.searchContacts(name: searchText) { [weak self] users in
-            if let searchBarText = self?.searchBar.text, searchText == searchBarText {
+            if let searchBarText = self?.searchBarText, searchText == searchBarText {
                 self?.searchResultView.searchResults = users
             }
         }
