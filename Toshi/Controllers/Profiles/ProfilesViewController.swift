@@ -184,11 +184,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         } else {
             view.addSubview(searchResultView)
             searchResultView.edges(to: view)
-
-            if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
-                searchResultView.topToBottom(of: addedHeader)
-            } else {
-                searchResultView.top(to: tableView)
         }
     }
     
