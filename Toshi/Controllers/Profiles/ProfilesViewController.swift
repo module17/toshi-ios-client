@@ -179,20 +179,20 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
 
         if type == .favorites {
             setupEmptyView()
-        }
-
-        view.addSubview(searchResultView)
-        searchResultView.edges(to: view)
-
-        if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
-            searchResultView.topToBottom(of: addedHeader)
         } else {
-            searchResultView.top(to: tableView)
-        }
+            view.addSubview(searchResultView)
+            searchResultView.edges(to: view)
 
-        searchResultView.left(to: tableView)
-        searchResultView.bottom(to: tableView)
-        searchResultView.right(to: tableView)
+            if let addedHeader = (tableView.tableHeaderView as? ProfilesHeaderView)?.addedHeader {
+                searchResultView.topToBottom(of: addedHeader)
+            } else {
+                searchResultView.top(to: tableView)
+            }
+
+            searchResultView.left(to: tableView)
+            searchResultView.bottom(to: tableView)
+            searchResultView.right(to: tableView)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -445,7 +445,9 @@ extension ProfilesViewController: UISearchResultsUpdating {
     
     public func updateSearchResults(for searchController: UISearchController) {
 
-//        dataSource.searchText = searchController.searchBar.text ?? ""
+        if type == .favorites {
+            dataSource.searchText = searchController.searchBar.text ?? ""
+        }
     }
 }
 
