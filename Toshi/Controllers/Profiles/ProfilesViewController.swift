@@ -51,7 +51,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     private(set) weak var output: ProfilesListCompletionOutput?
 
     let emptyView = EmptyView(title: Localized("favorites_empty_title"), description: Localized("favorites_empty_description"), buttonTitle: Localized("invite_friends_action_title"))
-    var shouldShowEmptyView = { type == .favorites }
+    var shouldShowEmptyView: Bool { return type == .favorites }
 
     var scrollView: UIScrollView {
         if type == .favorites {
