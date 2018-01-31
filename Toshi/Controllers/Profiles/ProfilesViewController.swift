@@ -296,7 +296,6 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         }
     }
 
-
     // MARK: - Action Handling
     
     @objc func emptyViewButtonPressed(_ button: ActionButton) {
@@ -532,4 +531,3 @@ extension ProfilesViewController: SearchSelectionDelegate {
         return isProfileSelected(user)
     }
 }
-

@@ -100,7 +100,6 @@ class BrowseAllViewController: UITableViewController {
         return searchResults.count
     }
 
-
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeue(ProfileCell.self, for: indexPath)
 

@@ -42,7 +42,6 @@ enum ThreadsDataSourceTarget {
         }
     }
     
-
     func title(for section: Int) -> String? {
         guard self == .recent, let contentSection = ThreadsContentSection(rawValue: section) else { return nil }
 

@@ -284,9 +284,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UIView.animate(withDuration: 0.3, animations: {
             self.screenProtectionWindow?.alpha = 0
-        }) { _ in
+        }, completion: { _ in
             self.screenProtectionWindow?.isHidden = true
-        }
+        })
     }
 }
 
