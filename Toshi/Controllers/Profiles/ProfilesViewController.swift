@@ -44,9 +44,11 @@ protocol ProfilesListCompletionOutput: class {
 // MARK: - Profiles View Controller
 
 final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjustable {
-    
+
     let type: ProfilesViewControllerType
     private var searchBarText: String = ""
+
+    private(set) var selectedProfiles = Set<TokenUser>()
 
     private(set) weak var output: ProfilesListCompletionOutput?
 
@@ -229,7 +231,7 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
                 return
         }
 
-        selectedProfilesView.updateDisplay(with: dataSource.selectedProfiles)
+        selectedProfilesView.updateDisplay(with: selectedProfiles)
     }
 
     // MARK: - View Setup
@@ -272,7 +274,29 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
         reloadData()
         showOrHideEmptyState()
     }
-    
+
+    func isProfileSelected(_ profile: TokenUser) -> Bool {
+        return selectedProfiles.contains(profile)
+    }
+
+    func updateSelection(with profile: TokenUser) {
+        if selectedProfiles.contains(profile) {
+            selectedProfiles.remove(profile)
+        } else {
+            selectedProfiles.insert(profile)
+        }
+    }
+
+    func rightBarButtonEnabled() -> Bool {
+        switch type {
+        case .newChat, .updateGroupChat, .favorites:
+            return true
+        default:
+            return selectedProfiles.count > 1
+        }
+    }
+
+
     // MARK: - Action Handling
     
     @objc func emptyViewButtonPressed(_ button: ActionButton) {
@@ -316,13 +340,13 @@ final class ProfilesViewController: UIViewController, Emptiable, KeyboardAdjusta
     }
     
     @objc private func didTapDone(_ button: UIBarButtonItem) {
-        guard dataSource.selectedProfiles.count > 0 else {
+        guard selectedProfiles.count > 0 else {
             assertionFailure("No selected profiles?!")
 
             return
         }
 
-        let membersIdsArray = dataSource.selectedProfiles.sorted { $0.username < $1.username }.map { $0.address }
+        let membersIdsArray = selectedProfiles.sorted { $0.username < $1.username }.map { $0.address }
 
         if type == .updateGroupChat {
             navigationController?.popViewController(animated: true)
@@ -368,10 +392,10 @@ extension ProfilesViewController: UITableViewDelegate {
         case .newChat:
             output?.didFinish(self, selectedProfilesIds: [profile.address])
         case .newGroupChat, .updateGroupChat:
-            dataSource.updateSelection(with: profile)
+            updateSelection(with: profile)
             updateHeaderWithSelections()
             reloadData()
-            navigationItem.rightBarButtonItem?.isEnabled = dataSource.rightBarButtonEnabled()
+            navigationItem.rightBarButtonItem?.isEnabled = rightBarButtonEnabled()
         }
     }
 }
@@ -401,7 +425,7 @@ extension ProfilesViewController: UITableViewDataSource {
         if isMultipleSelectionMode {
             cell.selectionStyle = .none
             cell.isCheckmarkShowing = true
-            cell.isCheckmarkChecked = dataSource.isProfileSelected(profile)
+            cell.isCheckmarkChecked = isProfileSelected(profile)
         }
 
         return cell

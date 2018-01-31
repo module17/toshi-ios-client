@@ -12,18 +12,9 @@ class ProfilesDataSource: NSObject {
     static let customFilteredProfilesKey = "Custom_Filtered_Profiles_Key"
     
     let type: ProfilesViewControllerType
-    private(set) var selectedProfiles = Set<TokenUser>()
     private var allProfiles: [TokenUser] = []
 
     var changesOutput: ProfilesDatasourceChangesOutput?
-
-    var selectedProfilesIds: [String] = [] {
-        didSet {
-            guard Yap.isUserSessionSetup else { return }
-
-            adjustToSelections()
-        }
-    }
 
     var excludedProfilesIds: [String] = [] {
         didSet {
@@ -128,21 +119,11 @@ class ProfilesDataSource: NSObject {
             guard Yap.isUserSessionSetup else { return }
 
             self.prepareDatabaseViews()
-            self.adjustToSelections()
             self.adjustToExclusions()
         }
     }
 
     // MARK: - Private API
-
-    private func adjustToSelections() {
-        let selectedIdsSet = Set<String>(selectedProfilesIds)
-
-        for profileId in selectedIdsSet {
-            guard let selectedProfile = allProfiles.first(where: { $0.address == profileId }) else { continue }
-            selectedProfiles.insert(selectedProfile)
-        }
-    }
 
     private func adjustToExclusions() {
         customFilterDatabaseConnection.readWrite { [weak self] transaction in
@@ -236,27 +217,6 @@ class ProfilesDataSource: NSObject {
         }
         
         return profile
-    }
-
-    func isProfileSelected(_ profile: TokenUser) -> Bool {
-        return selectedProfiles.contains(profile)
-    }
-
-    func updateSelection(with profile: TokenUser) {
-        if selectedProfiles.contains(profile) {
-            selectedProfiles.remove(profile)
-        } else {
-            selectedProfiles.insert(profile)
-        }
-    }
-
-    func rightBarButtonEnabled() -> Bool {
-        switch type {
-        case .newChat, .updateGroupChat, .favorites:
-            return true
-        default:
-            return selectedProfiles.count > 1
-        }
     }
 
     func prepareDatabaseViews() {
