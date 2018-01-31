@@ -413,6 +413,11 @@ final class ChatViewController: UIViewController, UINavigationControllerDelegate
     }
 
     private func adjustToLastMessage() {
+        guard let firstMessage = viewModel.messages.first, !firstMessage.isOutgoing else {
+            buttonsView.buttons = nil
+            return
+        }
+
         let buttonsMessage = viewModel.messages.flatMap { $0.sofaWrapper as? SofaMessage }.first(where: { $0.buttons.count > 0 })
         buttonsView.buttons = buttonsMessage?.buttons
     }

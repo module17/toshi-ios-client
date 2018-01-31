@@ -548,12 +548,8 @@ final class PaymentConfirmationViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
 
-    @objc func didTapPayButton() {
+    private func sendPayment() {
         payButton.showSpinner()
-        guard shouldSendSignedTransaction else {
-            self.delegate?.paymentConfirmationViewControllerFinished(on: self, parameters: self.paymentManager.parameters, transactionHash: "", error: nil)
-            return
-        }
 
         paymentManager.sendPayment { [weak self] error, transactionHash in
             guard let weakSelf = self else { return }
@@ -572,6 +568,15 @@ final class PaymentConfirmationViewController: UIViewController {
             }
 
             weakSelf.delegate?.paymentConfirmationViewControllerFinished(on: weakSelf, parameters: weakSelf.paymentManager.parameters, transactionHash: transactionHash, error: error)
+        }
+    }
+
+    @objc func didTapPayButton() {
+
+        if shouldSendSignedTransaction {
+            sendPayment()
+        } else {
+            self.delegate?.paymentConfirmationViewControllerFinished(on: self, parameters: self.paymentManager.parameters, transactionHash: "", error: nil)
         }
     }
 }

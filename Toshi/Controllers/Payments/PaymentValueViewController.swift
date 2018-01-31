@@ -16,7 +16,12 @@
 import UIKit
 
 protocol PaymentValueViewControllerDelegate: class {
+    func paymentValueControllerDidCancel(_ controller: PaymentValueViewController)
     func paymentValueViewControllerControllerFinished(with valueInWei: NSDecimalNumber, on controller: PaymentValueViewController)
+}
+
+extension PaymentValueViewControllerDelegate {
+    func paymentValueControllerDidCancel(_ controller: PaymentValueViewController) {}
 }
 
 enum PaymentValueViewControllerPaymentType {
@@ -179,6 +184,7 @@ class PaymentValueViewController: UIViewController {
     }
     
     @objc func cancelItemTapped(_ item: UIBarButtonItem) {
+        delegate?.paymentValueControllerDidCancel(self)
         dismiss(animated: true, completion: nil)
     }
     

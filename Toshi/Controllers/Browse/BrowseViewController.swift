@@ -278,6 +278,8 @@ class BrowseViewController: SearchableCollectionController {
         let sofaController = SOFAWebController()
         
         sofaController.load(url: url)
+
+        dismissSearch()
         navigationController?.pushViewController(sofaController, animated: true)
     }
     

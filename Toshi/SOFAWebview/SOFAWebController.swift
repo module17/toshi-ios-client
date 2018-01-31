@@ -145,6 +145,8 @@ final class SOFAWebController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        guard isMovingFromParentViewController else { return }
+
         scriptMessageHandlersNames.forEach { handlerName in
             webViewConfiguration.userContentController.removeScriptMessageHandler(forName: handlerName)
         }

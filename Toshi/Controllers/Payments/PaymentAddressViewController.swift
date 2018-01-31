@@ -4,6 +4,7 @@ import TinyConstraints
 import CameraScanner
 
 protocol PaymentAddressControllerDelegate: class {
+    func paymentAddressControllerDidCancel(_ controller: PaymentAddressViewController)
     func paymentAddressControllerFinished(with address: String, on controller: PaymentAddressViewController)
 }
 
@@ -115,6 +116,9 @@ class PaymentAddressViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         addressInputView.addressTextField.resignFirstResponder()
+
+        guard isMovingFromParentViewController else { return }
+        delegate?.paymentAddressControllerDidCancel(self)
     }
 
     @objc func nextBarButtonTapped(_ item: UIBarButtonItem) {
