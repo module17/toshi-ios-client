@@ -20,6 +20,11 @@ import UIKit
 protocol SearchSelectionDelegate: class {
 
     func didSelectSearchResult(user: TokenUser)
+    func isSearchResultSelected(user: TokenUser) -> Bool
+}
+
+extension SearchSelectionDelegate {
+    func isSearchResultSelected(user: TokenUser) -> Bool { return false }
 }
 
 class BrowseSearchResultView: UITableView {
@@ -66,6 +71,7 @@ extension BrowseSearchResultView: UITableViewDelegate {
         guard let item = searchResults.element(at: indexPath.row) else { return }
 
         searchDelegate?.didSelectSearchResult(user: item)
+        reloadData()
     }
 }
 
@@ -94,7 +100,7 @@ extension BrowseSearchResultView: UITableViewDataSource {
         if isMultipleSelectionMode {
             cell.selectionStyle = .none
             cell.isCheckmarkShowing = true
-//            cell.isCheckmarkChecked = dataSource.isProfileSelected(profile)
+            cell.isCheckmarkChecked = searchDelegate?.isSearchResultSelected(user: profile) ?? false
         }
 
         return cell

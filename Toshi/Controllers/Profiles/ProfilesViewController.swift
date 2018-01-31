@@ -527,5 +527,9 @@ extension ProfilesViewController: SearchSelectionDelegate {
     func didSelectSearchResult(user: TokenUser) {
         didSelectProfile(profile: user)
     }
+
+    func isSearchResultSelected(user: TokenUser) -> Bool {
+        return isProfileSelected(user)
+    }
 }
 
